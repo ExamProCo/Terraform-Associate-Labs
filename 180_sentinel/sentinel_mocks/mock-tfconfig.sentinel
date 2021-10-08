@@ -1,0 +1,336 @@
+import "strings"
+import "types"
+
+_modules = {
+	"root": {
+		"data": {},
+		"modules": {
+			"apache": {
+				"config": {},
+				"references": {
+					"instance_type": [
+						"var.instance_type",
+					],
+					"my_ip_with_cidr": [
+						"var.my_ip_with_cidr",
+					],
+					"public_key": [
+						"var.public_key",
+					],
+					"server_name": [
+						"var.server_name",
+					],
+					"vpc_id": [
+						"var.vpc_id",
+					],
+				},
+				"source":  "ExamProCo/apache-example/aws",
+				"version": "1.0.0",
+			},
+		},
+		"outputs": {
+			"public_ip": {
+				"depends_on":  [],
+				"description": "",
+				"references": [
+					"module.apache.public_ip",
+					"module.apache",
+				],
+				"sensitive": false,
+				"value":     undefined,
+			},
+		},
+		"providers": {
+			"aws": {
+				"alias": {
+					"": {
+						"config": {
+							"region": "us-east-1",
+						},
+						"references": {
+							"region": [],
+						},
+						"version": "",
+					},
+				},
+				"config": {
+					"region": "us-east-1",
+				},
+				"references": {
+					"region": [],
+				},
+				"version": "",
+			},
+		},
+		"resources": {
+			"aws_s3_bucket": {
+				"bucket": {
+					"config":       {},
+					"provisioners": null,
+					"references": {
+						"bucket": [
+							"var.bucket",
+						],
+					},
+				},
+			},
+		},
+		"variables": {
+			"bucket": {
+				"default":     "320489324827429471210198",
+				"description": "",
+			},
+			"instance_type": {
+				"default":     null,
+				"description": "",
+			},
+			"my_ip_with_cidr": {
+				"default":     null,
+				"description": "",
+			},
+			"public_key": {
+				"default":     null,
+				"description": "",
+			},
+			"server_name": {
+				"default":     null,
+				"description": "",
+			},
+			"vpc_id": {
+				"default":     null,
+				"description": "",
+			},
+		},
+	},
+
+	"module.apache": {
+		"data": {
+			"aws_ami": {
+				"amazon-linux-2": {
+					"config": {
+						"filter": [
+							{
+								"name": "owner-alias",
+								"values": [
+									"amazon",
+								],
+							},
+							{
+								"name": "name",
+								"values": [
+									"amzn2-ami-hvm*",
+								],
+							},
+						],
+						"most_recent": true,
+						"owners": [
+							"amazon",
+						],
+					},
+					"provisioners": null,
+					"references": {
+						"filter": [
+							{
+								"name":   [],
+								"values": [],
+							},
+							{
+								"name":   [],
+								"values": [],
+							},
+						],
+						"most_recent": [],
+						"owners":      [],
+					},
+				},
+			},
+			"aws_vpc": {
+				"main": {
+					"config":       {},
+					"provisioners": null,
+					"references": {
+						"id": [
+							"var.vpc_id",
+						],
+					},
+				},
+			},
+			"template_file": {
+				"user_data": {
+					"config":       {},
+					"provisioners": null,
+					"references": {
+						"template": [
+							"path.module",
+						],
+					},
+				},
+			},
+		},
+		"modules": {},
+		"outputs": {
+			"public_ip": {
+				"depends_on":  [],
+				"description": "",
+				"references": [
+					"aws_instance.my_server.public_ip",
+					"aws_instance.my_server",
+				],
+				"sensitive": false,
+				"value":     undefined,
+			},
+		},
+		"providers": {
+			"aws": {
+				"alias": {
+					"": {
+						"config":     {},
+						"references": {},
+						"version":    ">= 2.59.0",
+					},
+				},
+				"config":     {},
+				"references": {},
+				"version":    ">= 2.59.0",
+			},
+		},
+		"resources": {
+			"aws_instance": {
+				"my_server": {
+					"config":       {},
+					"provisioners": null,
+					"references": {
+						"ami": [
+							"data.aws_ami.amazon-linux-2.id",
+							"data.aws_ami.amazon-linux-2",
+						],
+						"instance_type": [
+							"var.instance_type",
+						],
+						"key_name": [
+							"aws_key_pair.deployer.key_name",
+							"aws_key_pair.deployer",
+						],
+						"tags": [
+							"var.server_name",
+						],
+						"user_data": [
+							"data.template_file.user_data.rendered",
+							"data.template_file.user_data",
+						],
+						"vpc_security_group_ids": [
+							"aws_security_group.sg_my_server.id",
+							"aws_security_group.sg_my_server",
+						],
+					},
+				},
+			},
+			"aws_key_pair": {
+				"deployer": {
+					"config": {
+						"key_name": "deployer-key",
+					},
+					"provisioners": null,
+					"references": {
+						"key_name": [],
+						"public_key": [
+							"var.public_key",
+						],
+					},
+				},
+			},
+			"aws_security_group": {
+				"sg_my_server": {
+					"config": {
+						"description": "MyServer Security Group",
+						"egress": [
+							{
+								"cidr_blocks": [
+									"0.0.0.0/0",
+								],
+								"description": "outgoing traffic",
+								"from_port":   0,
+								"ipv6_cidr_blocks": [
+									"::/0",
+								],
+								"prefix_list_ids": [],
+								"protocol":        "-1",
+								"security_groups": [],
+								"self":            false,
+								"to_port":         0,
+							},
+						],
+						"name": "sg_my_server",
+					},
+					"provisioners": null,
+					"references": {
+						"description": [],
+						"egress":      [],
+						"ingress": [
+							"var.my_ip_with_cidr",
+						],
+						"name": [],
+						"vpc_id": [
+							"data.aws_vpc.main.id",
+							"data.aws_vpc.main",
+						],
+					},
+				},
+			},
+		},
+		"variables": {
+			"instance_type": {
+				"default":     "t2.micro",
+				"description": "",
+			},
+			"my_ip_with_cidr": {
+				"default":     null,
+				"description": "Provide your IP eg. 104.194.51.113/32",
+			},
+			"public_key": {
+				"default":     null,
+				"description": "",
+			},
+			"server_name": {
+				"default":     "Apache Example Server",
+				"description": "",
+			},
+			"vpc_id": {
+				"default":     null,
+				"description": "",
+			},
+		},
+	},
+}
+
+module_paths = [
+	[],
+	[
+		"apache",
+	],
+]
+
+module = func(path) {
+	if types.type_of(path) is not "list" {
+		error("expected list, got", types.type_of(path))
+	}
+
+	if length(path) < 1 {
+		return _modules.root
+	}
+
+	addr = []
+	for path as p {
+		append(addr, "module")
+		append(addr, p)
+	}
+
+	return _modules[strings.join(addr, ".")]
+}
+
+data = _modules.root.data
+modules = _modules.root.modules
+providers = _modules.root.providers
+resources = _modules.root.resources
+variables = _modules.root.variables
+outputs = _modules.root.outputs
