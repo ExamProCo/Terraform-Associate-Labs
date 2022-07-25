@@ -1,7 +1,7 @@
 terraform {
   backend "remote" {
     hostname = "app.terraform.io"
-    organization = "ExamPro"
+    organization = "tf-learning-Jagdish"
 
     workspaces {
       name = "getting-started"
