@@ -1,7 +1,7 @@
 terraform {
   backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "ExamPro"
+    hostname     = "app.terraform.io"
+    organization = "southpaw"
 
     workspaces {
       name = "getting-started"
@@ -17,5 +17,5 @@ terraform {
 }
 
 locals {
-  project_name = "Andrew"
+  project_name = "Nate"
 }
