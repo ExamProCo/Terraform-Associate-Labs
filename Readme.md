@@ -94,7 +94,7 @@ We are going to learn the basics of Terraform:
 - terraform state list
 - terraform state mv
 - terraform state show
-- terraform state mv
+- terraform state rm
 
 ## Plan and Apply
 
