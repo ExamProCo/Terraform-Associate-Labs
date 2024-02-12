@@ -7,14 +7,14 @@ terraform {
   #    name = "getting-started"
   #  }
   #}
-  cloud {
-    hostname = "app.terraform.io"
-    organization = "ExamPro"
+  # cloud {
+  #   hostname = "app.terraform.io"
+  #   organization = "ExamPro"
 
-    workspaces {
-      name = "getting-started"
-    }
-  }
+  #   workspaces {
+  #     name = "getting-started"
+  #   }
+  # }
 
   required_providers {
     aws = {
