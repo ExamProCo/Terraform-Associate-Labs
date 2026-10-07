@@ -1,0 +1,6 @@
+[submodule "110_modules/terraform-aws-apache-example"]
+	path = 110_modules/terraform-aws-apache-example
+	url = https://github.com/ExamProCo/terraform-aws-apache-example.git
+[submodule "120_terraform-workflows"]
+	path = 120_terraform-workflows
+	url = https://github.com/omenking/vcs-terraform.git
